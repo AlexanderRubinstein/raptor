@@ -20,9 +20,11 @@ class ClusterTreeConfig(TreeBuilderConfig):
         reduction_dimension=10,
         clustering_algorithm=RAPTOR_Clustering,  # Default to RAPTOR clustering
         clustering_params={},  # Pass additional params as a dict
+        # cluster_embedding_model=None,
         *args,
         **kwargs,
     ):
+        # kwargs["cluster_embedding_model"] = cluster_embedding_model
         super().__init__(*args, **kwargs)
         self.reduction_dimension = reduction_dimension
         self.clustering_algorithm = clustering_algorithm

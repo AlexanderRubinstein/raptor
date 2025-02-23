@@ -136,9 +136,9 @@ class RetrievalAugmentationConfig:
         config_summary = """
         RetrievalAugmentationConfig:
             {tree_builder_config}
-            
+
             {tree_retriever_config}
-            
+
             QA Model: {qa_model}
             Tree Builder Type: {tree_builder_type}
         """.format(
@@ -156,7 +156,7 @@ class RetrievalAugmentation:
     Enables adding documents to the tree, retrieving information, and answering questions.
     """
 
-    def __init__(self, config=None, tree=None):
+    def __init__(self, config=None, tree=None, embedding_models=None, cluster_embedding_model=None):
         """
         Initializes a RetrievalAugmentation instance with the specified configuration.
         Args:
@@ -164,7 +164,10 @@ class RetrievalAugmentation:
             tree: The tree instance or the path to a pickled tree file.
         """
         if config is None:
-            config = RetrievalAugmentationConfig()
+            config = RetrievalAugmentationConfig(
+                tb_embedding_models=embedding_models,
+                tb_cluster_embedding_model=cluster_embedding_model
+            )
         if not isinstance(config, RetrievalAugmentationConfig):
             raise ValueError(
                 "config must be an instance of RetrievalAugmentationConfig"

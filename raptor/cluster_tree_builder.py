@@ -75,12 +75,21 @@ class ClusterTreeBuilder(TreeBuilder):
                 max_tokens=summarization_length,
             )
 
+            if isinstance(summarized_text, tuple):
+                assert len(summarized_text) == 2
+                summarized_text, summarization_prompt = summarized_text
+            else:
+                summarization_prompt = None
+
             logging.info(
                 f"Node Texts Length: {len(self.tokenizer.encode(node_texts))}, Summarized Text Length: {len(self.tokenizer.encode(summarized_text))}"
             )
 
             __, new_parent_node = self.create_node(
-                next_node_index, summarized_text, {node.index for node in cluster}
+                index=next_node_index,
+                text=summarized_text,
+                children_indices={node.index for node in cluster},
+                summarization_prompt=summarization_prompt
             )
 
             with lock:

@@ -25,20 +25,21 @@ def global_cluster_embeddings(
     dim: int,
     n_neighbors: Optional[int] = None,
     metric: str = "cosine",
+    random_state: int = 0
 ) -> np.ndarray:
     if n_neighbors is None:
         n_neighbors = int((len(embeddings) - 1) ** 0.5)
     reduced_embeddings = umap.UMAP(
-        n_neighbors=n_neighbors, n_components=dim, metric=metric
+        n_neighbors=n_neighbors, n_components=dim, metric=metric, random_state=random_state
     ).fit_transform(embeddings)
     return reduced_embeddings
 
 
 def local_cluster_embeddings(
-    embeddings: np.ndarray, dim: int, num_neighbors: int = 10, metric: str = "cosine"
+    embeddings: np.ndarray, dim: int, num_neighbors: int = 10, metric: str = "cosine", random_state: int = 0
 ) -> np.ndarray:
     reduced_embeddings = umap.UMAP(
-        n_neighbors=num_neighbors, n_components=dim, metric=metric
+        n_neighbors=num_neighbors, n_components=dim, metric=metric, random_state=random_state
     ).fit_transform(embeddings)
     return reduced_embeddings
 

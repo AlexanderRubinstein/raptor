@@ -1,4 +1,4 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Optional
 
 
 class Node:
@@ -6,12 +6,12 @@ class Node:
     Represents a node in the hierarchical tree structure.
     """
 
-    def __init__(self, text: str, index: int, children: Set[int], embeddings) -> None:
+    def __init__(self, text: str, index: int, children: Set[int], embeddings, summarization_prompt: Optional[str] = None) -> None:
         self.text = text
         self.index = index
         self.children = children
         self.embeddings = embeddings
-
+        self.summarization_prompt = summarization_prompt
 
 class Tree:
     """

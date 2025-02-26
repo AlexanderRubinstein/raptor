@@ -1,4 +1,5 @@
 import logging
+import os
 import pickle
 
 from .cluster_tree_builder import ClusterTreeBuilder, ClusterTreeConfig
@@ -174,7 +175,7 @@ class RetrievalAugmentation:
             )
 
         # Check if tree is a string (indicating a path to a pickled tree)
-        if isinstance(tree, str):
+        if isinstance(tree, str) and os.path.exists(tree):
             try:
                 with open(tree, "rb") as file:
                     self.tree = pickle.load(file)
@@ -182,6 +183,8 @@ class RetrievalAugmentation:
                     raise ValueError("The loaded object is not an instance of Tree")
             except Exception as e:
                 raise ValueError(f"Failed to load tree from {tree}: {e}")
+        elif isinstance(tree, str) and not os.path.exists(tree):
+            self.tree = None
         elif isinstance(tree, Tree) or tree is None:
             self.tree = tree
         else:
@@ -204,7 +207,7 @@ class RetrievalAugmentation:
             f"Successfully initialized RetrievalAugmentation with Config {config.log_config()}"
         )
 
-    def add_documents(self, docs):
+    def add_documents(self, docs, use_multithreading=True):
         """
         Adds documents to the tree and creates a TreeRetriever instance.
 
@@ -219,7 +222,7 @@ class RetrievalAugmentation:
                 # self.add_to_existing(docs)
                 return
 
-        self.tree = self.tree_builder.build_from_text(text=docs)
+        self.tree = self.tree_builder.build_from_text(text=docs, use_multithreading=use_multithreading)
         self.retriever = TreeRetriever(self.tree_retriever_config, self.tree)
 
     def retrieve(

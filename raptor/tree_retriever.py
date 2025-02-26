@@ -195,7 +195,7 @@ class TreeRetriever(BaseRetriever):
         return selected_nodes, context
 
     def retrieve_information(
-        self, current_nodes: List[Node], query: str, num_layers: int
+        self, current_nodes: List[Node], query: str, num_layers: int, top_k: int = None
     ) -> str:
         """
         Retrieves the most relevant information from the tree based on the query.
@@ -215,6 +215,9 @@ class TreeRetriever(BaseRetriever):
 
         node_list = current_nodes
 
+        if top_k is None:
+            top_k = self.top_k
+
         for layer in range(num_layers):
 
             embeddings = get_embeddings(node_list, self.context_embedding_model)
@@ -229,7 +232,7 @@ class TreeRetriever(BaseRetriever):
                 ]
 
             elif self.selection_mode == "top_k":
-                best_indices = indices[: self.top_k]
+                best_indices = indices[: top_k]
 
             nodes_to_add = [node_list[idx] for idx in best_indices]
 
@@ -254,7 +257,7 @@ class TreeRetriever(BaseRetriever):
         query: str,
         start_layer: int = None,
         num_layers: int = None,
-        top_k: int = 10, 
+        top_k: int = 10,
         max_tokens: int = 3500,
         collapse_tree: bool = True,
         return_layer_information: bool = False,
@@ -307,7 +310,10 @@ class TreeRetriever(BaseRetriever):
         else:
             layer_nodes = self.tree.layer_to_nodes[start_layer]
             selected_nodes, context = self.retrieve_information(
-                layer_nodes, query, num_layers
+                layer_nodes,
+                query,
+                num_layers,
+                top_k=top_k
             )
 
         if return_layer_information:

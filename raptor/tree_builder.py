@@ -156,7 +156,7 @@ class TreeBuilder:
         )
 
     def create_node(
-        self, index: int, text: str, children_indices: Optional[Set[int]] = None
+        self, index: int, text: str, children_indices: Optional[Set[int]] = None, summarization_prompt: Optional[str] = None
     ) -> Tuple[int, Node]:
         """Creates a new node with the given index, text, and (optionally) children indices.
 
@@ -176,7 +176,7 @@ class TreeBuilder:
             model_name: model.create_embedding(text)
             for model_name, model in self.embedding_models.items()
         }
-        return (index, Node(text, index, children_indices, embeddings))
+        return (index, Node(text, index, children_indices, embeddings, summarization_prompt))
 
     def create_embedding(self, text) -> List[float]:
         """
